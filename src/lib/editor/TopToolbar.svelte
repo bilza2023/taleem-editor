@@ -31,6 +31,7 @@
 	  <option value="progressbar">Progress Bar</option>
 	  <option value="quoteSlide">Quote</option>
 	  <option value="keyIdeasSlide">Key Ideas</option>
+	  <option value="eq">Equation (EQ)</option>
 	</select>
   
 	<button class="btn" on:click={() => dispatch("new")}>🆕 New</button>

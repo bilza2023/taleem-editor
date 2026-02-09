@@ -1,4 +1,3 @@
-
 <script>
 	// text
 	import TitleAndSubtitleEditor from '$lib/slides/TitleAndSubtitleEditor.svelte';
@@ -22,8 +21,8 @@
 	import QuoteSlideEditor from '$lib/slides/QuoteSlideEditor.svelte';
 	import KeyIdeasSlideEditor from '$lib/slides/KeyIdeasSlideEditor.svelte';
 
-	// eq (later)
-	// import EqSlideEditor from '$lib/slides/EqSlideEditor.svelte';
+	// eq
+	import EqSlideEditor from '$lib/slides/EqSlideEditor.svelte';
 
 	export let type;
 	export let data = [];
@@ -73,9 +72,7 @@
 	<KeyIdeasSlideEditor {data} {onChange} />
 
 {:else if type === 'eq'}
-	<div style="margin-top:8px;color:#777;">
-		EQ editor coming next…
-	</div>
+	<EqSlideEditor {data} {onChange} />
 
 {:else}
 	<div style="margin-top:8px;color:red;">
