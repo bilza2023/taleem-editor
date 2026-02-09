@@ -5,6 +5,20 @@
 	let deckName = "taleem-deck-new";
 	let slides = [];
   
+	function normalizeSlide(slide) {
+	if (slide.type !== 'eq') return slide;
+
+	return {
+		...slide,
+		data: slide.data.map(line => ({
+			name: 'line',
+			type: line.type,
+			content: line.content ?? '',
+			spItems: Array.isArray(line.spItems) ? line.spItems : []
+		}))
+	};
+}
+
 	function resetEditor() {
 	  deckName = "taleem-deck-new";
 	  slides = [];
@@ -28,7 +42,7 @@
 	  const payload = {
 		version: "deck-v1",
 		name: deckName,
-		deck: slides
+		deck: slides.map(normalizeSlide)
 	  };
   
 	  localStorage.setItem(
@@ -46,7 +60,7 @@
 	  const payload = {
 		version: "deck-v1",
 		name: deckName,
-		deck: slides
+		deck: slides.map(normalizeSlide)
 	  };
   
 	  const blob = new Blob(
