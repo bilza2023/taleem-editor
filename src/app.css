@@ -1,0 +1,29 @@
+:root {
+    color-scheme: dark;
+  }
+  
+  html, body {
+    margin: 0;
+    background: #0f1115;
+    color: #e6e6e6;
+    font-family: system-ui, sans-serif;
+  }
+  
+  input, select, textarea, button {
+    background: #1a1d24;
+    color: #e6e6e6;
+    border: 1px solid #2a2f3a;
+  }
+  
+  button {
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background: #232735;
+  }
+  
+  label {
+    font-size: 0.9rem;
+  }
+  
