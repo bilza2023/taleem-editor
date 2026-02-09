@@ -1,43 +1,107 @@
 <script>
-	import TopToolbar from './TopToolbar.svelte';
-	import SlideList from './SlideList.svelte';
-
+	import TopToolbar from "./TopToolbar.svelte";
+	import SlideList from "./SlideList.svelte";
+  
+	let deckName = "taleem-deck-new";
 	let slides = [];
-
+  
+	function resetEditor() {
+	  deckName = "taleem-deck-new";
+	  slides = [];
+	}
+  
 	function addSlide(type) {
-		slides = [
-			...slides,
-			{
-				type,
-				start: 0,
-				end: 5,
-				data: []
-			}
-		];
+	  slides = [
+		...slides,
+		{
+		  type,
+		  start: 0,
+		  end: 5,
+		  data: []
+		}
+	  ];
 	}
-
+  
+	function launchDeck() {
+	  if (!deckName) return;
+  
+	  const payload = {
+		version: "deck-v1",
+		name: deckName,
+		deck: slides
+	  };
+  
+	  localStorage.setItem(
+		`taleem:deck:${deckName}`,
+		JSON.stringify(payload)
+	  );
+  
+	  window.open(
+		`/player?source=local&deck=${encodeURIComponent(deckName)}`,
+		"_blank"
+	  );
+	}
+  
+	function downloadDeck() {
+	  const payload = {
+		version: "deck-v1",
+		name: deckName,
+		deck: slides
+	  };
+  
+	  const blob = new Blob(
+		[JSON.stringify(payload, null, 2)],
+		{ type: "application/json" }
+	  );
+  
+	  const url = URL.createObjectURL(blob);
+	  const a = document.createElement("a");
+	  a.href = url;
+	  a.download = `${deckName}.json`;
+	  a.click();
+	  URL.revokeObjectURL(url);
+	}
+  
+	function addMockTimings() {
+	  let t = 0;
+	  slides = slides.map(slide => {
+		const start = t;
+		const end = t + 5;
+		t = end;
+		return { ...slide, start, end };
+	  });
+	}
+  
 	function updateSlide(index, updated) {
-		slides = slides.map((s, i) => (i === index ? updated : s));
+	  slides[index] = updated;
+	  slides = slides;
 	}
-
+  
 	function deleteSlide(index) {
-		slides = slides.filter((_, i) => i !== index);
+	  slides.splice(index, 1);
+	  slides = slides;
 	}
-
+  
 	function moveSlide(from, to) {
-		if (to < 0 || to >= slides.length) return;
-		const copy = [...slides];
-		const [item] = copy.splice(from, 1);
-		copy.splice(to, 0, item);
-		slides = copy;
+	  const item = slides.splice(from, 1)[0];
+	  slides.splice(to, 0, item);
+	  slides = slides;
 	}
-</script>
-
-<TopToolbar onAddSlide={addSlide} />
-
-<SlideList
+  </script>
+  
+  <TopToolbar
+	bind:deckName
+	on:new={resetEditor}
+	on:launch={launchDeck}
+	on:download={downloadDeck}
+	on:mocktimings={addMockTimings}
+	on:addslide={(e) => addSlide(e.detail)}
+  />
+  
+  <SlideList
 	{slides}
 	onUpdate={updateSlide}
 	onDelete={deleteSlide}
 	onMove={moveSlide}
-/>
+  />
+  
