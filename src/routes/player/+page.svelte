@@ -1,69 +1,47 @@
-<script lang="ts">
+<script>
 	import { onMount } from "svelte";
-	import Editor from "$lib/editor/Editor.svelte";
+	import { page } from "$app/stores";
 
-	let savedDecks: string[] = [];
-	let activeDeckKey: string | null = null;
-	let activeDeckData: any = null;
-
-	function loadDeckList() {
-		savedDecks = Object.keys(localStorage)
-			.filter(k => k.startsWith("taleem-deck-"))
-			.sort();
-	}
-
-	function openInEditor(key: string) {
-		const raw = localStorage.getItem(key);
-		if (!raw) return;
-
-		activeDeckKey = key;
-		activeDeckData = JSON.parse(raw);
-	}
-
-	function openInPlayer(key: string) {
-		window.open(
-			`/player?source=local&deck=${encodeURIComponent(key)}`,
-			"_blank"
-		);
-	}
-
-	function deleteDeck(key: string) {
-		if (!confirm(`Delete ${key}?`)) return;
-		localStorage.removeItem(key);
-		loadDeckList();
-	}
-
-	function newDeck() {
-		activeDeckKey = null;
-		activeDeckData = null;
-	}
+	let deckKey = null;
+	let deckData = null;
 
 	onMount(() => {
-		loadDeckList();
+		const unsubscribe = page.subscribe(($page) => {
+			deckKey = $page.url.searchParams.get("deck");
+
+			if (!deckKey) {
+				console.warn("No deck key provided in URL");
+				return;
+			}
+
+			const raw = localStorage.getItem(deckKey);
+
+			if (!raw) {
+				console.error("Deck not found in localStorage:", deckKey);
+				return;
+			}
+
+			deckData = JSON.parse(raw);
+
+			console.log("✅ Player loaded deck:", deckKey);
+			console.log(deckData);
+		});
+
+		return unsubscribe;
 	});
 </script>
 
-{#if !activeDeckData}
-	<h2>Saved decks</h2>
+<h2>Player Page</h2>
 
-	{#if savedDecks.length === 0}
-		<p>No decks found.</p>
-	{:else}
-		<ul>
-			{#each savedDecks as key}
-				<li style="margin-bottom:8px;">
-					<strong>{key}</strong><br />
-					<button on:click={() => openInEditor(key)}>✏️ Edit</button>
-					<button on:click={() => openInPlayer(key)}>▶️ Play</button>
-					<button on:click={() => deleteDeck(key)}>🗑️ Delete</button>
-				</li>
-			{/each}
-		</ul>
-	{/if}
-
-	<button on:click={newDeck}>➕ New Deck</button>
+{#if !deckKey}
+	<p>❌ No deck specified.</p>
+{:else if !deckData}
+	<p>⏳ Loading deck: <strong>{deckKey}</strong></p>
 {:else}
-	<button on:click={newDeck}>← Back to deck list</button>
-	<Editor initialDeck={activeDeckData} />
+	<p>✅ Deck loaded: <strong>{deckKey}</strong></p>
+	<p>Slides count: {deckData.deck?.length}</p>
 
+	<pre style="background:#111;color:#0f0;padding:12px;overflow:auto;">
+{JSON.stringify(deckData, null, 2)}
+	</pre>
 {/if}
