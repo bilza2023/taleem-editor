@@ -1,3 +1,4 @@
+
 <script>
 	export let data = [];
 	export let onChange;
@@ -5,7 +6,7 @@
 	function addBar() {
 		onChange([
 			...data,
-			{ name: 'bar', label: '', value: 0 }
+			{ name: 'bar', label: '', value: 0, showAt: 0 }
 		]);
 	}
 
@@ -13,7 +14,10 @@
 		const copy = [...data];
 		copy[index] = {
 			...copy[index],
-			[field]: field === 'value' ? Number(value) : value
+			[field]:
+				field === 'value' || field === 'showAt'
+					? Number(value) || 0
+					: value
 		};
 		onChange(copy);
 	}
@@ -25,7 +29,7 @@
 
 <div style="margin-top:8px;">
 	{#each data as bar, index}
-		<div style="display:flex;gap:8px;margin-bottom:6px;">
+		<div style="display:flex;gap:8px;margin-bottom:6px;align-items:center;">
 			<input
 				type="text"
 				placeholder="Label"
@@ -40,6 +44,14 @@
 				value={bar.value}
 				on:input={(e) => updateBar(index, 'value', e.target.value)}
 				style="width:80px;"
+			/>
+
+			<input
+				type="number"
+				placeholder="showAt"
+				value={bar.showAt ?? 0}
+				on:input={(e) => updateBar(index, 'showAt', e.target.value)}
+				style="width:70px;"
 			/>
 
 			<button on:click={() => removeBar(index)}>✕</button>

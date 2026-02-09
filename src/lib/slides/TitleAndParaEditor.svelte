@@ -2,16 +2,21 @@
 	export let data = [];
 	export let onChange;
 
-	function get(name) {
-		const item = data.find(d => d.name === name);
-		return item ? item.content : '';
+	function getItem(name) {
+		return data.find(d => d.name === name) || { content: '', showAt: 0 };
 	}
 
-	function update(name, value) {
+	function update(name, field, value) {
 		const rest = data.filter(d => d.name !== name);
+		const current = getItem(name);
+
 		onChange([
 			...rest,
-			{ name, content: value }
+			{
+				name,
+				content: field === 'content' ? value : current.content,
+				showAt: field === 'showAt' ? Number(value) || 0 : current.showAt ?? 0
+			}
 		]);
 	}
 </script>
@@ -21,8 +26,18 @@
 		Title<br />
 		<input
 			type="text"
-			value={get('title')}
-			on:input={(e) => update('title', e.target.value)}
+			value={getItem('title').content}
+			on:input={(e) => update('title', 'content', e.target.value)}
+			style="width:100%;"
+		/>
+	</label>
+
+	<label style="display:block;margin-top:4px;">
+		showAt<br />
+		<input
+			type="number"
+			value={getItem('title').showAt ?? 0}
+			on:input={(e) => update('title', 'showAt', e.target.value)}
 			style="width:100%;"
 		/>
 	</label>
@@ -32,7 +47,17 @@
 		<textarea
 			rows="4"
 			style="width:100%;"
-			on:input={(e) => update('para', e.target.value)}
-		>{get('para')}</textarea>
+			on:input={(e) => update('para', 'content', e.target.value)}
+		>{getItem('para').content}</textarea>
+	</label>
+
+	<label style="display:block;margin-top:4px;">
+		showAt<br />
+		<input
+			type="number"
+			value={getItem('para').showAt ?? 0}
+			on:input={(e) => update('para', 'showAt', e.target.value)}
+			style="width:100%;"
+		/>
 	</label>
 </div>

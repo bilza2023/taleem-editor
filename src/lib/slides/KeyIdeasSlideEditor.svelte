@@ -7,7 +7,7 @@
 	function normalize() {
 		const base = [...data];
 		while (base.length < SIZE) {
-			base.push({ name: 'card', icon: '', label: '' });
+			base.push({ name: 'card', icon: '', label: '', showAt: 0 });
 		}
 		return base.slice(0, SIZE);
 	}
@@ -16,7 +16,7 @@
 		const items = normalize();
 		items[index] = {
 			...items[index],
-			[field]: value
+			[field]: field === 'showAt' ? Number(value) || 0 : value
 		};
 		onChange(items);
 	}
@@ -46,6 +46,18 @@
 						type="text"
 						value={card.label}
 						on:input={(e) => update(index, 'label', e.target.value)}
+						style="width:100%;"
+					/>
+				</label>
+			</div>
+
+			<div style="margin-top:6px;">
+				<label>
+					showAt<br />
+					<input
+						type="number"
+						value={card.showAt ?? 0}
+						on:input={(e) => update(index, 'showAt', e.target.value)}
 						style="width:100%;"
 					/>
 				</label>

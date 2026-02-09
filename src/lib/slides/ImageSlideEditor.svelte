@@ -3,12 +3,18 @@
 	export let onChange;
 
 	function getImage() {
-		const item = data.find(d => d.name === 'image');
-		return item ? item.content : '';
+		return data.find(d => d.name === 'image') || { content: '', showAt: 0 };
 	}
 
-	function updateImage(value) {
-		onChange([{ name: 'image', content: value }]);
+	function update(field, value) {
+		const current = getImage();
+		onChange([
+			{
+				name: 'image',
+				content: field === 'content' ? value : current.content,
+				showAt: field === 'showAt' ? Number(value) || 0 : current.showAt ?? 0
+			}
+		]);
 	}
 </script>
 
@@ -17,10 +23,22 @@
 		Image filename<br />
 		<input
 			type="text"
-			value={getImage()}
-			on:input={(e) => updateImage(e.target.value)}
+			value={getImage().content}
+			on:input={(e) => update('content', e.target.value)}
 			style="width:100%;"
 			placeholder="example.webp"
 		/>
 	</label>
+
+	<div style="margin-top:4px;">
+		<label>
+			showAt<br />
+			<input
+				type="number"
+				value={getImage().showAt ?? 0}
+				on:input={(e) => update('showAt', e.target.value)}
+				style="width:100%;"
+			/>
+		</label>
+	</div>
 </div>

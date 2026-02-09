@@ -3,15 +3,17 @@
 	export let onChange;
 
 	function getBar() {
-		return data[0] || { name: 'bar', label: '', value: 0 };
+		return data[0] || { name: 'bar', label: '', value: 0, showAt: 0 };
 	}
 
 	function update(field, value) {
+		const current = getBar();
 		onChange([
 			{
 				name: 'bar',
-				...getBar(),
-				[field]: field === 'value' ? Number(value) : value
+				label: field === 'label' ? value : current.label,
+				value: field === 'value' ? Number(value) || 0 : current.value,
+				showAt: field === 'showAt' ? Number(value) || 0 : current.showAt ?? 0
 			}
 		]);
 	}
@@ -34,6 +36,16 @@
 			type="number"
 			value={getBar().value}
 			on:input={(e) => update('value', e.target.value)}
+			style="width:100px;"
+		/>
+	</label>
+
+	<label style="display:block;margin-top:8px;">
+		showAt<br />
+		<input
+			type="number"
+			value={getBar().showAt ?? 0}
+			on:input={(e) => update('showAt', e.target.value)}
 			style="width:100px;"
 		/>
 	</label>

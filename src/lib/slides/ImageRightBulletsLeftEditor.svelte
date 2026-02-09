@@ -2,28 +2,39 @@
 	export let data = [];
 	export let onChange;
 
-	let image = '';
+	let image = { content: '', showAt: 0 };
 	let bullets = [];
 
 	$: {
-		image = (data.find(d => d.name === 'image') || {}).content || '';
+		image = data.find(d => d.name === 'image') || { content: '', showAt: 0 };
 		bullets = data.filter(d => d.name === 'bullet');
 	}
 
 	function emit(nextImage = image, nextBullets = bullets) {
 		onChange([
-			{ name: 'image', content: nextImage },
-			...nextBullets.map(b => ({ name: 'bullet', content: b.content }))
+			{
+				name: 'image',
+				content: nextImage.content,
+				showAt: nextImage.showAt ?? 0
+			},
+			...nextBullets.map(b => ({
+				name: 'bullet',
+				content: b.content,
+				showAt: b.showAt ?? 0
+			}))
 		]);
 	}
 
 	function addBullet() {
-		emit(image, [...bullets, { content: '' }]);
+		emit(image, [...bullets, { content: '', showAt: 0 }]);
 	}
 
-	function updateBullet(i, value) {
+	function updateBullet(i, field, value) {
 		const next = [...bullets];
-		next[i] = { content: value };
+		next[i] = {
+			...next[i],
+			[field]: field === 'showAt' ? Number(value) || 0 : value
+		};
 		emit(image, next);
 	}
 
@@ -37,21 +48,46 @@
 		Image filename<br />
 		<input
 			type="text"
-			value={image}
-			on:input={(e) => emit(e.target.value, bullets)}
+			value={image.content}
+			on:input={(e) =>
+				emit({ ...image, content: e.target.value }, bullets)
+			}
 			style="width:100%;"
 		/>
 	</label>
 
+	<div style="margin-top:4px;">
+		<label>
+			showAt<br />
+			<input
+				type="number"
+				value={image.showAt ?? 0}
+				on:input={(e) =>
+					emit({ ...image, showAt: Number(e.target.value) || 0 }, bullets)
+				}
+				style="width:100%;"
+			/>
+		</label>
+	</div>
+
 	<div style="margin-top:8px;">
 		{#each bullets as bullet, i}
-			<div style="display:flex;gap:8px;margin-bottom:6px;">
+			<div style="display:flex;gap:8px;margin-bottom:6px;align-items:center;">
 				<input
 					type="text"
 					value={bullet.content}
-					on:input={(e) => updateBullet(i, e.target.value)}
+					on:input={(e) => updateBullet(i, 'content', e.target.value)}
 					style="flex:1;"
 				/>
+
+				<input
+					type="number"
+					placeholder="showAt"
+					value={bullet.showAt ?? 0}
+					on:input={(e) => updateBullet(i, 'showAt', e.target.value)}
+					style="width:70px;"
+				/>
+
 				<button on:click={() => removeBullet(i)}>✕</button>
 			</div>
 		{/each}
