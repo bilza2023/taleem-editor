@@ -1,11 +1,13 @@
 <script>
 	import TopToolbar from "./TopToolbar.svelte";
+	import SoundComponent from "./SoundComponent.svelte";
 	import SlideList from "./SlideList.svelte";
 	export let initialDeck = null;
 	import { onMount } from "svelte";
 
 	let deckName = "taleem-deck-new";
 	let slides = [];
+    let currentTime = 0;
 
 	function loadFromInitialDeck() {
 	if (!initialDeck) return;
@@ -156,6 +158,7 @@ $: if (initialDeck && !hydrated) {
 	on:addslide={(e) => addSlide(e.detail)}
 />
 
+<SoundComponent />
 <SlideList
 	{slides}
 	onUpdate={updateSlide}
