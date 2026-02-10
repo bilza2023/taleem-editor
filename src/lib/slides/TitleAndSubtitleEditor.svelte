@@ -1,7 +1,8 @@
 <script>
 	export let data = [];
 	export let onChange;
-
+	export let currentTime=0;
+	
 	function getItem(name) {
 		return data.find(d => d.name === name) || { content: '', showAt: 0 };
 	}

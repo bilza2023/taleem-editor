@@ -3,7 +3,8 @@
 
 	export let data = [];
 	export let onChange;
-
+	export let currentTime=0;
+	
 	function addLine(type) {
 		onChange([
 			...data,

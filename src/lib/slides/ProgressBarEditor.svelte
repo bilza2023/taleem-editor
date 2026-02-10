@@ -1,7 +1,8 @@
 <script>
 	export let data = [];
 	export let onChange;
-
+	export let currentTime=0;
+	
 	function getBar() {
 		return data[0] || { name: 'bar', label: '', value: 0, showAt: 0 };
 	}
