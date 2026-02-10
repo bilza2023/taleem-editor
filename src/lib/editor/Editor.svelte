@@ -8,6 +8,10 @@
 	let deckName = "taleem-deck-new";
 	let slides = [];
     let currentTime = 0;
+	function handleTimeUpdate(t) {
+		currentTime = t;
+		console.log('EDITOR currentTime:', t);
+	}
 
 	function loadFromInitialDeck() {
 	if (!initialDeck) return;
@@ -158,7 +162,8 @@ $: if (initialDeck && !hydrated) {
 	on:addslide={(e) => addSlide(e.detail)}
 />
 
-<SoundComponent />
+<SoundComponent onTimeUpdate={handleTimeUpdate} />
+
 <SlideList
 	{slides}
 	onUpdate={updateSlide}

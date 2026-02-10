@@ -1,5 +1,9 @@
+
 <script>
 	import { Howl } from 'howler';
+
+	// Editor passes this callback
+	export let onTimeUpdate = () => {};
 
 	let sound = null;
 	let isLoaded = false;
@@ -42,7 +46,7 @@
 				},
 				onstop: () => {
 					isPlaying = false;
-					currentTime = 0;
+					updateTime(0);
 				}
 			});
 		};
@@ -50,26 +54,31 @@
 		input.click();
 	}
 
-	function play() {
-		if (sound) sound.play();
-	}
-
-	function pause() {
-		if (sound) sound.pause();
-	}
-
-	function stop() {
-		if (sound) sound.stop();
+	function updateTime(t) {
+		currentTime = t;
+		onTimeUpdate(t); // notify Editor
 	}
 
 	function tick() {
 		if (!sound || !sound.playing()) return;
 
 		if (!isScrubbing) {
-			currentTime = sound.seek() || 0;
+			updateTime(sound.seek() || 0);
 		}
 
 		requestAnimationFrame(tick);
+	}
+
+	function play() {
+		sound?.play();
+	}
+
+	function pause() {
+		sound?.pause();
+	}
+
+	function stop() {
+		sound?.stop();
 	}
 
 	function onScrubStart() {
@@ -77,15 +86,15 @@
 	}
 
 	function onScrub(e) {
-		currentTime = Number(e.target.value);
+		updateTime(Number(e.target.value));
 	}
 
 	function onScrubEnd() {
-		if (sound) sound.seek(currentTime);
+		sound?.seek(currentTime);
 		isScrubbing = false;
 	}
 
-	function formatTime(t) {
+	function fmt(t) {
 		return t.toFixed(2) + 's';
 	}
 </script>
@@ -126,7 +135,7 @@
 		<button on:click={stop}>⏹</button>
 
 		<span class="time">
-			{formatTime(currentTime)} / {formatTime(duration)}
+			{fmt(currentTime)} / {fmt(duration)}
 		</span>
 
 		<input
