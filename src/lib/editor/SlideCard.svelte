@@ -8,6 +8,7 @@
 	export let onUpdate;
 	export let onDelete;
 	export let onMove;
+	export let currentTime=0;
 
 	let folded = false;
 
@@ -42,10 +43,12 @@
 			start={slide.start}
 			end={slide.end}
 			onChange={updateTiming}
+			{currentTime}
 		/>
 
 		<!-- Slide-specific editor -->
 		<SlideTypeRouter
+		   {currentTime}
 			type={slide.type}
 			data={slide.data}
 			onChange={updateData}

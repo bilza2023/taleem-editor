@@ -165,6 +165,7 @@ $: if (initialDeck && !hydrated) {
 <SoundComponent onTimeUpdate={handleTimeUpdate} />
 
 <SlideList
+    {currentTime}
 	{slides}
 	onUpdate={updateSlide}
 	onDelete={deleteSlide}

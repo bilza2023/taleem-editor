@@ -1,6 +1,8 @@
 <script>
+	import ShowAtComponent from "./ShowAtComponent.svelte";
 	export let data = [];
 	export let onChange;
+	export let currentTime=0;
 
 	function addBullet() {
 		onChange([...data, { name: 'bullet', content: '', showAt: 0 }]);
@@ -30,13 +32,12 @@
 				style="flex:1;"
 			/>
 
-			<input
-				type="number"
-				placeholder="showAt"
-				value={item.showAt ?? 0}
-				on:input={(e) => updateBullet(index, 'showAt', e.target.value)}
-				style="width:70px;"
-			/>
+				<ShowAtComponent
+					value={item.showAt ?? 0}
+					currentTime={currentTime}
+					onChange={(v) => updateBullet(index, 'showAt', v)}
+				/>
+
 
 			<button on:click={() => removeBullet(index)}>✕</button>
 		</div>
