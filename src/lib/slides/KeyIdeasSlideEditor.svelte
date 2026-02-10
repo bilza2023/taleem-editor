@@ -53,15 +53,11 @@
 			</div>
 
 			<div style="margin-top:6px;">
-				<label>
-					showAt<br />
-					<input
-						type="number"
-						value={card.showAt ?? 0}
-						on:input={(e) => update(index, 'showAt', e.target.value)}
-						style="width:100%;"
-					/>
-				</label>
+				<ShowAtComponent
+				value={card.showAt ?? 0}
+				currentTime={currentTime}
+				onChange={(v) => update(index, 'showAt', v)}
+			/>
 			</div>
 		</div>
 	{/each}

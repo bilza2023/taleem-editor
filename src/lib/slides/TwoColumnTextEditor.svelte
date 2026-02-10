@@ -1,5 +1,5 @@
 <script>
-		import ShowAtComponent from "./ShowAtComponent.svelte";
+	import ShowAtComponent from "./ShowAtComponent.svelte";
 	export let data = [];
 	export let onChange;
 	export let currentTime=0;
@@ -35,12 +35,12 @@
 
 	<label style="display:block;margin-top:4px;">
 		showAt<br />
-		<input
-			type="number"
-			value={getItem('left').showAt ?? 0}
-			on:input={(e) => update('left', 'showAt', e.target.value)}
-			style="width:100%;"
-		/>
+		<ShowAtComponent
+	value={getItem('left').showAt ?? 0}
+	currentTime={currentTime}
+	onChange={(v) => update('left', 'showAt', v)}
+/>
+
 	</label>
 
 	<label style="display:block;margin-top:8px;">
@@ -53,12 +53,11 @@
 	</label>
 
 	<label style="display:block;margin-top:4px;">
-		showAt<br />
-		<input
-			type="number"
-			value={getItem('right').showAt ?? 0}
-			on:input={(e) => update('right', 'showAt', e.target.value)}
-			style="width:100%;"
-		/>
+		<ShowAtComponent
+		value={getItem('right').showAt ?? 0}
+		currentTime={currentTime}
+		onChange={(v) => update('right', 'showAt', v)}
+	/>
+	
 	</label>
 </div>

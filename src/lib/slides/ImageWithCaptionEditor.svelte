@@ -1,5 +1,5 @@
 <script>
-		import ShowAtComponent from "./ShowAtComponent.svelte";
+	import ShowAtComponent from "./ShowAtComponent.svelte";
 	export let data = [];
 	export let onChange;
 	export let currentTime=0;
@@ -32,7 +32,7 @@
 			style="width:100%;"
 		/>
 	</label>
-
+<!-- 
 	<label style="display:block;margin-top:4px;">
 		showAt<br />
 		<input
@@ -41,7 +41,7 @@
 			on:input={(e) => update('image', 'showAt', e.target.value)}
 			style="width:100%;"
 		/>
-	</label>
+	</label> -->
 
 	<label style="display:block;margin-top:8px;">
 		Caption<br />
@@ -54,12 +54,11 @@
 	</label>
 
 	<label style="display:block;margin-top:4px;">
-		showAt<br />
-		<input
-			type="number"
-			value={getItem('caption').showAt ?? 0}
-			on:input={(e) => update('caption', 'showAt', e.target.value)}
-			style="width:100%;"
-		/>
+		<ShowAtComponent
+		value={getItem('caption').showAt ?? 0}
+		currentTime={currentTime}
+		onChange={(v) => update('caption', 'showAt', v)}
+	/>
+	
 	</label>
 </div>

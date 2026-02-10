@@ -30,16 +30,13 @@
 			placeholder="example.webp"
 		/>
 	</label>
-
+<!-- 
 	<div style="margin-top:4px;">
-		<label>
-			showAt<br />
-			<input
-				type="number"
-				value={getImage().showAt ?? 0}
-				on:input={(e) => update('showAt', e.target.value)}
-				style="width:100%;"
-			/>
-		</label>
-	</div>
+		<ShowAtComponent
+	value={getImage().showAt ?? 0}
+	currentTime={currentTime}
+	onChange={(v) => update('showAt', v)}
+</div>
+/> -->
+
 </div>

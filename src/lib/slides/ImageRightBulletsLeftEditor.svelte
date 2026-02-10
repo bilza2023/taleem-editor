@@ -58,17 +58,12 @@
 	</label>
 
 	<div style="margin-top:4px;">
-		<label>
-			showAt<br />
-			<input
-				type="number"
-				value={image.showAt ?? 0}
-				on:input={(e) =>
-					emit({ ...image, showAt: Number(e.target.value) || 0 }, bullets)
-				}
-				style="width:100%;"
-			/>
-		</label>
+		<ShowAtComponent
+	value={image.showAt ?? 0}
+	currentTime={currentTime}
+	onChange={(v) => emit({ ...image, showAt: v }, bullets)}
+/>
+
 	</div>
 
 	<div style="margin-top:8px;">
@@ -81,13 +76,12 @@
 					style="flex:1;"
 				/>
 
-				<input
-					type="number"
-					placeholder="showAt"
-					value={bullet.showAt ?? 0}
-					on:input={(e) => updateBullet(i, 'showAt', e.target.value)}
-					style="width:70px;"
-				/>
+				<ShowAtComponent
+				value={bullet.showAt ?? 0}
+				currentTime={currentTime}
+				onChange={(v) => updateBullet(i, 'showAt', v)}
+			/>
+			
 
 				<button on:click={() => removeBullet(i)}>✕</button>
 			</div>

@@ -48,13 +48,12 @@
 				style="width:80px;"
 			/>
 
-			<input
-				type="number"
-				placeholder="showAt"
-				value={bar.showAt ?? 0}
-				on:input={(e) => updateBar(index, 'showAt', e.target.value)}
-				style="width:70px;"
-			/>
+			<ShowAtComponent
+			value={bar.showAt ?? 0}
+			currentTime={currentTime}
+			onChange={(v) => updateBar(index, 'showAt', v)}
+		/>
+		
 
 			<button on:click={() => removeBar(index)}>✕</button>
 		</div>
