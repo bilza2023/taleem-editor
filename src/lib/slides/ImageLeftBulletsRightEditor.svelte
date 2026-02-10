@@ -1,8 +1,9 @@
 <script>
+		import ShowAtComponent from "./ShowAtComponent.svelte";
 	export let data = [];
 	export let onChange;
 	export let currentTime=0;
-	
+
 	let image = { content: '', showAt: 0 };
 	let bullets = [];
 
@@ -57,14 +58,11 @@
 	<div style="margin-top:4px;">
 		<label>
 			showAt<br />
-			<input
-				type="number"
-				value={image.showAt ?? 0}
-				on:input={(e) =>
-					emit({ ...image, showAt: Number(e.target.value) || 0 }, bullets)
-				}
-				style="width:100%;"
-			/>
+				<ShowAtComponent
+					value={item.showAt ?? 0}
+					currentTime={currentTime}
+					onChange={(v) => updateBullet(index, 'showAt', v)}
+				/>
 		</label>
 	</div>
 

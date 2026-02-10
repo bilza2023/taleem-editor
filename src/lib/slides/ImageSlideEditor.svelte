@@ -1,4 +1,5 @@
 <script>
+		import ShowAtComponent from "./ShowAtComponent.svelte";
 	export let data = [];
 	export let onChange;
 	export let currentTime=0;

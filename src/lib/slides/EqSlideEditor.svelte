@@ -1,10 +1,10 @@
 <script>
 	import EqLineEditor from './eq/EqLineEditor.svelte';
-
+	import ShowAtComponent from "./ShowAtComponent.svelte";
 	export let data = [];
 	export let onChange;
 	export let currentTime=0;
-	
+
 	function addLine(type) {
 		onChange([
 			...data,
