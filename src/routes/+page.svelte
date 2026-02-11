@@ -79,30 +79,48 @@
 	}
 
 	async function handleUpload(event) {
-		const file = event.target.files[0];
-		if (!file) return;
+	const file = event.target.files[0];
+	if (!file) return;
 
-		try {
-			const text = await file.text();
-			const parsed = JSON.parse(text);
+	try {
+		const text = await file.text();
+		const parsed = JSON.parse(text);
 
-			// basic validation
-			if (!parsed || !parsed.title || !Array.isArray(parsed.slides)) {
-				alert("Invalid Taleem JSON file.");
-				return;
-			}
-
-			const storageKey = `taleem-deck-${Date.now()}`;
-
-			localStorage.setItem(storageKey, text);
-
-			window.location.href =
-				`${base}/editor?deck=${encodeURIComponent(storageKey)}`;
-
-		} catch {
-			alert("Invalid JSON file.");
+		// Proper validation aligned with schema
+		if (
+			!parsed ||
+			parsed.version !== "deck-v1" ||
+			!parsed.name ||
+			!Array.isArray(parsed.deck)
+		) {
+			alert("Invalid Taleem JSON file.");
+			return;
 		}
+
+		const storageKey = `taleem-deck-${Date.now()}`;
+
+		// Normalize structure (safety)
+		const normalized = {
+			version: "deck-v1",
+			name: parsed.name,
+			background: parsed.background || {
+				backgroundColor: "#111111",
+				backgroundImage: null,
+				backgroundImageOpacity: 0.3
+			},
+			deck: parsed.deck
+		};
+
+		localStorage.setItem(storageKey, JSON.stringify(normalized));
+
+		window.location.href =
+			`${base}/editor?deck=${encodeURIComponent(storageKey)}`;
+
+	} catch (err) {
+		alert("Invalid JSON file.");
 	}
+}
+
 
 	onMount(loadDeckList);
 </script>
