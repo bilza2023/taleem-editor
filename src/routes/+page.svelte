@@ -1,7 +1,7 @@
-
 <script>
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
+	import { base } from "$app/paths";
 
 	let savedDecks = [];
 
@@ -12,11 +12,11 @@
 	}
 
 	function editDeck(key) {
-		goto(`/editor?deck=${encodeURIComponent(key)}`);
+		goto(`${base}/editor?deck=${encodeURIComponent(key)}`);
 	}
 
 	function playDeck(key) {
-		goto(`/player?deck=${encodeURIComponent(key)}`);
+		goto(`${base}/player?deck=${encodeURIComponent(key)}`);
 	}
 
 	function deleteDeck(key) {
@@ -26,7 +26,7 @@
 	}
 
 	function newDeck() {
-		goto("/editor");
+		goto(`${base}/editor`);
 	}
 
 	onMount(loadDeckList);
