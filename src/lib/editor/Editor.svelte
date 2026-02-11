@@ -4,6 +4,7 @@
 	import SlideList from "./SlideList.svelte";
 	export let initialDeck = null;
 	import { onMount } from "svelte";
+	import { base } from '$app/paths';
 
 	let deckName = "taleem-deck-new";
 	let slides = [];
@@ -83,15 +84,16 @@
 	}
 
 	function launchDeck() {
-		if (!deckName) return;
+	if (!deckName) return;
 
-		const storageKey = getStorageKey(deckName);
+	const storageKey = getStorageKey(deckName);
 
-		window.open(
-			`/player?source=local&deck=${encodeURIComponent(storageKey)}`,
-			"_blank"
-		);
-	}
+	window.open(
+		`${base}/player?deck=${encodeURIComponent(storageKey)}`,
+		"_blank"
+	);
+}
+
 
 	function saveAndLaunch() {
 		saveDeck();
