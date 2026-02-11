@@ -29,8 +29,6 @@
 		goto(`${base}/editor`);
 	}
 //////////////////////////////////////
-import { base } from '$app/paths';
-
 let fileInput;
 
 function triggerUpload() {
@@ -67,6 +65,30 @@ async function handleUpload(event) {
 	}
 }
 
+
+let newTitle = "";
+
+function createNewDeck() {
+	if (!newTitle.trim()) {
+		alert("Please enter a title.");
+		return;
+	}
+
+	const storageKey = `taleem-deck-${Date.now()}`;
+
+	// Minimal valid blank deck structure
+	const blankDeck = {
+		deck: {
+			title: newTitle.trim(),
+			slides: []
+		}
+	};
+
+	localStorage.setItem(storageKey, JSON.stringify(blankDeck));
+
+	// open editor with this key
+	window.location.href = `${base}/editor?deck=${encodeURIComponent(storageKey)}`;
+}
 //////////////////////////////////////
 	onMount(loadDeckList);
 </script>
@@ -88,7 +110,22 @@ async function handleUpload(event) {
 	</ul>
 {/if}
 
-<button on:click={newDeck}>➕ New Deck</button>
+<!-- <button on:click={newDeck}>➕ New Deck</button> -->
+<h3>Create New Presentation</h3>
+
+<input
+	type="text"
+	placeholder="Enter presentation title"
+	bind:value={newTitle}
+/>
+
+<button on:click={createNewDeck}>
+	➕ Create
+</button>
+
+
+<br/>
+<hr/>
 
 <button on:click={triggerUpload}>
 	📂 Upload Presentation

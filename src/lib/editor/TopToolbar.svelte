@@ -14,6 +14,11 @@
 </script>
 
 <div class="topbar">
+
+	<button class="btn" on:click={() => dispatch("save")}>
+		💾 Save
+	</button>
+
 	<select class="select" on:change={onAddSlide}>
 		<option value="">➕ Add slide…</option>
 		<option value="titleAndSubtitle">Title & Subtitle</option>
@@ -34,8 +39,6 @@
 		<option value="eq">Equation (EQ)</option>
 	</select>
 
-	<button class="btn" on:click={() => dispatch("new")}>🆕 New</button>
-
 	<input
 		class="deck-input"
 		type="text"
@@ -43,20 +46,18 @@
 		placeholder="deck name"
 	/>
 
-	<button class="btn" on:click={() => dispatch("save")}>
-		💾 Save
+	<!-- <button class="btn" on:click={() => dispatch("new")}>🆕 New</button> -->
+
+	<button class="btn subtle" on:click={() => dispatch("mocktimings")}>
+		⏱️ Mock Timings
+	</button>
+
+	<button class="btn" on:click={() => dispatch("download")}>
+		⬇️ JSON
 	</button>
 
 	<button class="btn primary" on:click={() => dispatch("launch")}>
 		▶️ Launch
-	</button>
-
-	<button class="btn" on:click={() => dispatch("download")}>
-		⬇️ Download JSON
-	</button>
-
-	<button class="btn subtle" on:click={() => dispatch("mocktimings")}>
-		⏱️ Add mock timings
 	</button>
 </div>
 
