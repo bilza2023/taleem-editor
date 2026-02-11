@@ -1,1 +1,0 @@
-import{k as o,h as _,o as c,Z as d,u as T,H as b,v as p,l as v,w as f}from"./FFZh-Sh9.js";import{B as y}from"./ChmclCsj.js";function k(t,i,u=!1){_&&c();var e=new y(t),h=u?d:0;function n(a,r){if(_){const l=T(t)===b;if(a===l){var s=p();v(s),e.anchor=s,f(!1),e.ensure(a,r),f(!0);return}}e.ensure(a,r)}o(()=>{var a=!1;i((r,s=!0)=>{a=!0,n(s,r)}),a||n(!1,null)},h)}export{k as i};

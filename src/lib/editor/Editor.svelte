@@ -6,11 +6,20 @@
 	import { onMount } from "svelte";
 	import { base } from '$app/paths';
 
+	let showBackgroundForm = false;
 
 	let deckKey = "";
 	let deckName = "taleem-deck-new";
 	let slides = [];
     let currentTime = 0;
+
+	let background = {
+		backgroundColor: "#111111",
+		backgroundImage: null,
+		backgroundImageOpacity: 0.3
+	};
+
+
 	function handleTimeUpdate(t) {
 		currentTime = t;
 		console.log('EDITOR currentTime:', t);
@@ -78,29 +87,23 @@
 	const payload = {
 		version: "deck-v1",
 		name: deckName,
-		background: {
-			backgroundColor: "#111111",
-			backgroundImage: null,
-			backgroundImageOpacity: 0.3
-		},
+		background: background,
 		deck: slides.map(normalizeSlide)
 	};
 
 	localStorage.setItem(deckKey, JSON.stringify(payload));
 
 	alert("✅ Saved");
-}
+	}
 
+	function launchDeck() {
+		if (!deckKey) return;
 
-
-function launchDeck() {
-	if (!deckKey) return;
-
-	window.open(
-		`${base}/player?deck=${encodeURIComponent(deckKey)}`,
-		"_blank"
-	);
-}
+		window.open(
+			`${base}/player?deck=${encodeURIComponent(deckKey)}`,
+			"_blank"
+		);
+	}
 
 
 	function saveAndLaunch() {
@@ -176,6 +179,8 @@ onMount(() => {
 
 	deckName = parsed.name || "taleem-deck-new";
 	slides = Array.isArray(parsed.deck) ? parsed.deck : [];
+
+	background = parsed.background || background;
 });
 
 
@@ -192,6 +197,47 @@ onMount(() => {
 	on:addslide={(e) => addSlide(e.detail)}
 />
 
+
+<button
+	style="margin: 8px 14px;"
+	on:click={() => showBackgroundForm = !showBackgroundForm}
+>
+	🎨 Background
+</button>
+
+{#if showBackgroundForm}
+	<div class="bg-form">
+		<label>
+			Color:
+			<input
+				type="color"
+				bind:value={background.backgroundColor}
+			/>
+		</label>
+
+		<label>
+			Image URL:
+			<input
+				type="text"
+				placeholder="image.jpg"
+				bind:value={background.backgroundImage}
+			/>
+		</label>
+
+		<label>
+			Image Opacity:
+			<input
+				type="range"
+				min="0"
+				max="1"
+				step="0.05"
+				bind:value={background.backgroundImageOpacity}
+			/>
+		</label>
+	</div>
+{/if}
+
+
 <SoundComponent onTimeUpdate={handleTimeUpdate} />
 
 <SlideList
@@ -201,3 +247,34 @@ onMount(() => {
 	onDelete={deleteSlide}
 	onMove={moveSlide}
 />
+
+
+<style>
+	.bg-form {
+	margin: 10px 14px;
+	padding: 10px;
+	background: #0f0f0f;
+	border: 1px solid #222;
+	border-radius: 6px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	max-width: 400px;
+}
+
+.bg-form label {
+	display: flex;
+	flex-direction: column;
+	font-size: 13px;
+	gap: 4px;
+}
+
+.bg-form input[type="text"] {
+	background: #111;
+	color: #eee;
+	border: 1px solid #333;
+	padding: 6px;
+	border-radius: 4px;
+}
+
+</style>
