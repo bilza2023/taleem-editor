@@ -1,6 +1,7 @@
 
 <script>
 	import { onMount } from 'svelte';
+	import { base } from '$app/paths';
 
 	onMount(async () => {
 		// ----------------------------------
@@ -25,7 +26,7 @@
 		// load useMath helper
 		// ----------------------------------
 		const useMath = document.createElement('script');
-		useMath.src = '/player/useMath.js';
+		useMath.src =  `${base}/player/useMath.js`;
 		document.body.appendChild(useMath);
 
 		// ----------------------------------
@@ -33,7 +34,7 @@
 		// ----------------------------------
 		const play = document.createElement('script');
 		play.type = 'module';
-		play.src = '/player/play.js';
+		play.src = `${base}/player/play.js`;
 		document.body.appendChild(play);
 	});
 </script>
