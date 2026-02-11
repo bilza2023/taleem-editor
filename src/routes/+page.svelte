@@ -28,7 +28,46 @@
 	function newDeck() {
 		goto(`${base}/editor`);
 	}
+//////////////////////////////////////
+import { base } from '$app/paths';
 
+let fileInput;
+
+function triggerUpload() {
+	fileInput.click();
+}
+
+async function handleUpload(event) {
+	const file = event.target.files[0];
+	if (!file) return;
+
+	try {
+		const text = await file.text();
+		const deck = JSON.parse(text);
+
+		// basic sanity check (optional but safe)
+		if (!deck || !deck.deck) {
+			alert("Invalid Taleem JSON file.");
+			return;
+		}
+
+		// generate storage key
+		const storageKey = `taleem-deck-${Date.now()}`;
+
+		localStorage.setItem(storageKey, text);
+
+		// launch normally
+		window.open(
+			`${base}/player?deck=${encodeURIComponent(storageKey)}`,
+			"_blank"
+		);
+
+	} catch (err) {
+		alert("Invalid JSON file.");
+	}
+}
+
+//////////////////////////////////////
 	onMount(loadDeckList);
 </script>
 
@@ -50,3 +89,15 @@
 {/if}
 
 <button on:click={newDeck}>➕ New Deck</button>
+
+<button on:click={triggerUpload}>
+	📂 Upload Presentation
+</button>
+
+<input
+	type="file"
+	accept=".json,application/json"
+	bind:this={fileInput}
+	on:change={handleUpload}
+	style="display:none"
+/>
