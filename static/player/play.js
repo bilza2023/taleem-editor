@@ -3,12 +3,13 @@ import { Timer, renderLoop } from
 
 import {
   createTaleemPlayer,
-  resolveAssetPaths,
-  resolveBackground
+  resolveBackground,
+  // resolveAssetPaths,
 } from
   "https://unpkg.com/taleem-player@latest/dist/taleem-player.esm.js";
 
 import { getDeckEndTime } from "./getDeckEndTime.js";
+import { applyStaticPlayerDefaults } from "./applyStaticPlayerDefaults.js";
 
 // ----------------------------------
 // read deck name from URL
@@ -40,10 +41,14 @@ try {
   throw new Error("Invalid deck JSON");
 }
 
+
+// 🔥 STATIC PLAYER OVERRIDE (surgical)
+deck = applyStaticPlayerDefaults(deck);
+
 // ----------------------------------
 // resolve assets
 // ----------------------------------
-resolveAssetPaths(deck, "/images/");
+// resolveAssetPaths(deck, "/images/");
 resolveBackground(deck, "/images/");
 
 // ----------------------------------
