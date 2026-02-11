@@ -4,13 +4,37 @@
 	import { base } from "$app/paths";
 
 	let savedDecks = [];
+	let fileInput;
+	let newTitle = "";
 
+	// ----------------------------
+	// LOAD SAVED DECKS
+	// ----------------------------
 	function loadDeckList() {
 		savedDecks = Object.keys(localStorage)
 			.filter(k => k.startsWith("taleem-deck-"))
-			.sort();
+			.map(key => {
+				try {
+					const raw = localStorage.getItem(key);
+					const parsed = JSON.parse(raw);
+
+					return {
+						key,
+						title: parsed?.title || key
+					};
+				} catch {
+					return {
+						key,
+						title: key
+					};
+				}
+			})
+			.sort((a, b) => a.title.localeCompare(b.title));
 	}
 
+	// ----------------------------
+	// NAVIGATION
+	// ----------------------------
 	function editDeck(key) {
 		goto(`${base}/editor?deck=${encodeURIComponent(key)}`);
 	}
@@ -25,71 +49,61 @@
 		loadDeckList();
 	}
 
-	function newDeck() {
-		goto(`${base}/editor`);
-	}
-//////////////////////////////////////
-let fileInput;
-
-function triggerUpload() {
-	fileInput.click();
-}
-
-async function handleUpload(event) {
-	const file = event.target.files[0];
-	if (!file) return;
-
-	try {
-		const text = await file.text();
-		const deck = JSON.parse(text);
-
-		// basic sanity check (optional but safe)
-		if (!deck || !deck.deck) {
-			alert("Invalid Taleem JSON file.");
+	// ----------------------------
+	// CREATE NEW DECK
+	// ----------------------------
+	function createNewDeck() {
+		if (!newTitle.trim()) {
+			alert("Please enter a title.");
 			return;
 		}
 
-		// generate storage key
 		const storageKey = `taleem-deck-${Date.now()}`;
 
-		localStorage.setItem(storageKey, text);
+		const blankDeck = {
+			name: newTitle.trim(),
+			deck: []
+		};
 
-		// launch normally
-		window.open(
-			`${base}/player?deck=${encodeURIComponent(storageKey)}`,
-			"_blank"
-		);
+		localStorage.setItem(storageKey, JSON.stringify(blankDeck));
 
-	} catch (err) {
-		alert("Invalid JSON file.");
-	}
-}
-
-
-let newTitle = "";
-
-function createNewDeck() {
-	if (!newTitle.trim()) {
-		alert("Please enter a title.");
-		return;
+		window.location.href =
+			`${base}/editor?deck=${encodeURIComponent(storageKey)}`;
 	}
 
-	const storageKey = `taleem-deck-${Date.now()}`;
+	// ----------------------------
+	// UPLOAD JSON
+	// ----------------------------
+	function triggerUpload() {
+		fileInput.click();
+	}
 
-	// Minimal valid blank deck structure
-	const blankDeck = {
-		deck: {
-			title: newTitle.trim(),
-			slides: []
+	async function handleUpload(event) {
+		const file = event.target.files[0];
+		if (!file) return;
+
+		try {
+			const text = await file.text();
+			const parsed = JSON.parse(text);
+
+			// basic validation
+			if (!parsed || !parsed.title || !Array.isArray(parsed.slides)) {
+				alert("Invalid Taleem JSON file.");
+				return;
+			}
+
+			const storageKey = `taleem-deck-${Date.now()}`;
+
+			localStorage.setItem(storageKey, text);
+
+			window.location.href =
+				`${base}/editor?deck=${encodeURIComponent(storageKey)}`;
+
+		} catch {
+			alert("Invalid JSON file.");
 		}
-	};
+	}
 
-	localStorage.setItem(storageKey, JSON.stringify(blankDeck));
-
-	// open editor with this key
-	window.location.href = `${base}/editor?deck=${encodeURIComponent(storageKey)}`;
-}
-//////////////////////////////////////
 	onMount(loadDeckList);
 </script>
 
@@ -99,18 +113,21 @@ function createNewDeck() {
 	<p>No decks found.</p>
 {:else}
 	<ul>
-		{#each savedDecks as key}
+		{#each savedDecks as deck}
 			<li style="margin-bottom:10px;">
-				<strong>{key}</strong><br />
-				<button on:click={() => editDeck(key)}>✏️ Edit</button>
-				<button on:click={() => playDeck(key)}>▶️ Play</button>
-				<button on:click={() => deleteDeck(key)}>🗑️ Delete</button>
+				<strong>{deck.title}</strong>
+				<small style="opacity:0.6;">({deck.key})</small><br />
+
+				<button on:click={() => editDeck(deck.key)}>✏️ Edit</button>
+				<button on:click={() => playDeck(deck.key)}>▶️ Play</button>
+				<button on:click={() => deleteDeck(deck.key)}>🗑️ Delete</button>
 			</li>
 		{/each}
 	</ul>
 {/if}
 
-<!-- <button on:click={newDeck}>➕ New Deck</button> -->
+<hr />
+
 <h3>Create New Presentation</h3>
 
 <input
@@ -123,9 +140,7 @@ function createNewDeck() {
 	➕ Create
 </button>
 
-
-<br/>
-<hr/>
+<br /><br />
 
 <button on:click={triggerUpload}>
 	📂 Upload Presentation

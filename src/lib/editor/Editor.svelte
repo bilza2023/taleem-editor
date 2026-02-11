@@ -6,6 +6,8 @@
 	import { onMount } from "svelte";
 	import { base } from '$app/paths';
 
+
+	let deckKey = "";
 	let deckName = "taleem-deck-new";
 	let slides = [];
     let currentTime = 0;
@@ -17,11 +19,12 @@
 	function loadFromInitialDeck() {
 	if (!initialDeck) return;
 
-	deckName = initialDeck.name || "taleem-deck-new";
+	deckName = initialDeck.name || "un-named";
 	slides = Array.isArray(initialDeck.deck)
 		? initialDeck.deck
 		: [];
 }
+
 
 	/* ───────── EQ safety only ───────── */
 	function normalizeSlide(slide) {
@@ -39,12 +42,6 @@
 	}
 
 	/* ───────── helpers ───────── */
-	function getStorageKey(name) {
-		if (!name) return null;
-		return name.startsWith("taleem-deck-")
-			? name
-			: `taleem-deck-${name}`;
-	}
 
 	function buildPayload(storageKey) {
 		return {
@@ -73,23 +70,34 @@
 	}
 
 	function saveDeck() {
-		if (!deckName) return;
-
-		const storageKey = getStorageKey(deckName);
-		const payload = buildPayload(storageKey);
-
-		localStorage.setItem(storageKey, JSON.stringify(payload));
-
-	alert(`✅ Saved: ${storageKey}`);
+	if (!deckKey) {
+		alert("Missing deck key.");
+		return;
 	}
 
-	function launchDeck() {
-	if (!deckName) return;
+	const payload = {
+		version: "deck-v1",
+		name: deckName,
+		background: {
+			backgroundColor: "#111111",
+			backgroundImage: null,
+			backgroundImageOpacity: 0.3
+		},
+		deck: slides.map(normalizeSlide)
+	};
 
-	const storageKey = getStorageKey(deckName);
+	localStorage.setItem(deckKey, JSON.stringify(payload));
+
+	alert("✅ Saved");
+}
+
+
+
+function launchDeck() {
+	if (!deckKey) return;
 
 	window.open(
-		`${base}/player?deck=${encodeURIComponent(storageKey)}`,
+		`${base}/player?deck=${encodeURIComponent(deckKey)}`,
 		"_blank"
 	);
 }
@@ -149,6 +157,26 @@ $: if (initialDeck && !hydrated) {
 	loadFromInitialDeck();
 	hydrated = true;
 }
+onMount(() => {
+	const params = new URLSearchParams(window.location.search);
+	deckKey = params.get("deck") || "";
+
+	if (!deckKey) {
+		console.warn("No deck key in URL");
+		return;
+	}
+
+	const raw = localStorage.getItem(deckKey);
+	if (!raw) {
+		console.warn("Deck not found in localStorage");
+		return;
+	}
+
+	const parsed = JSON.parse(raw);
+
+	deckName = parsed.name || "taleem-deck-new";
+	slides = Array.isArray(parsed.deck) ? parsed.deck : [];
+});
 
 
 </script>
