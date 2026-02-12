@@ -52,10 +52,10 @@
 
 	/* ───────── helpers ───────── */
 
-	function buildPayload(storageKey) {
+	function buildPayload() {
 		return {
 			version: "deck-v1",
-			name: storageKey,
+			name: deckName,
 			deck: slides.map(normalizeSlide)
 		};
 	}
@@ -112,8 +112,7 @@
 	}
 
 	function downloadDeck() {
-		const storageKey = getStorageKey(deckName);
-		const payload = buildPayload(storageKey);
+		const payload = buildPayload();
 
 		const blob = new Blob(
 			[JSON.stringify(payload, null, 2)],
@@ -123,7 +122,7 @@
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement("a");
 		a.href = url;
-		a.download = `${storageKey}.json`;
+		a.download = `${deckName}.json`;
 		a.click();
 		URL.revokeObjectURL(url);
 	}
