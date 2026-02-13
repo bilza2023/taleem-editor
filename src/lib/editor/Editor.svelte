@@ -12,6 +12,8 @@
 	let deckName = "taleem-deck-new";
 	let slides = [];
     let currentTime = 0;
+	let audio = "";
+
 
 	let background = {
 		backgroundColor: "#111111",
@@ -53,12 +55,19 @@
 	/* ───────── helpers ───────── */
 
 	function buildPayload() {
-		return {
-			version: "deck-v1",
-			name: deckName,
-			deck: slides.map(normalizeSlide)
-		};
+	const payload = {
+		version: "deck-v1",
+		name: deckName,
+		deck: slides.map(normalizeSlide)
+	};
+
+	if (audio) {
+		payload.audio = audio;
 	}
+
+	return payload;
+}
+
 
 	/* ───────── core actions ───────── */
 	function resetEditor() {
@@ -84,12 +93,9 @@
 		return;
 	}
 
-	const payload = {
-		version: "deck-v1",
-		name: deckName,
-		background: background,
-		deck: slides.map(normalizeSlide)
-	};
+	const payload = buildPayload();
+	payload.background = background;
+
 
 	localStorage.setItem(deckKey, JSON.stringify(payload));
 
@@ -180,13 +186,16 @@ onMount(() => {
 	slides = Array.isArray(parsed.deck) ? parsed.deck : [];
 
 	background = parsed.background || background;
+	audio = parsed.audio || "";
+
 });
 
 
 </script>
-
 <TopToolbar
 	bind:deckName
+	audio={audio}
+	on:updateAudio={(e) => audio = e.detail}
 	on:new={resetEditor}
 	on:save={saveDeck}
 	on:launch={launchDeck}

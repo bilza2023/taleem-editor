@@ -2,6 +2,7 @@
 	import { createEventDispatcher } from "svelte";
 
 	export let deckName = "taleem-deck-new";
+  	export let audio = "";
 
 	const dispatch = createEventDispatcher();
 
@@ -11,6 +12,10 @@
 		dispatch("addslide", type);
 		e.target.value = "";
 	}
+
+  function handleAudioInput(e) {
+    dispatch("updateAudio", e.target.value);
+  }
 </script>
 
 <div class="topbar">
@@ -45,6 +50,16 @@
 		bind:value={deckName}
 		placeholder="deck name"
 	/>
+
+	<!-- svelte-ignore a11y_label_has_associated_control -->
+	<label>Audio File</label>
+	<input
+	type="text"
+	placeholder="lesson1.opus"
+	bind:value={audio}
+	on:input={handleAudioInput}
+  />
+  
 
 	<!-- <button class="btn" on:click={() => dispatch("new")}>🆕 New</button> -->
 
