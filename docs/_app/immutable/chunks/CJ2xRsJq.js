@@ -1,1 +1,0 @@
-import{C as o,h as u,J as _,i as t,K as g,M as a,o as l,n,F as p,O as m}from"./Cmrh-gxE.js";function E(d,r){let s=null,f=t;var i;if(t){s=p;for(var e=m(document.head);e!==null&&(e.nodeType!==g||e.data!==d);)e=a(e);if(e===null)l(!1);else{var y=a(e);e.remove(),n(y)}}t||(i=document.head.appendChild(o()));try{u(()=>r(i),_)}finally{f&&(l(!0),n(s))}}export{E as h};

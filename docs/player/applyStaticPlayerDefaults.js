@@ -4,8 +4,8 @@
  * Mutates deck in place (runtime only).
  */
 export function applyStaticPlayerDefaults(deck) {
-    const DEFAULT_IMAGE = "./images/image.webp";
-    const DEFAULT_BG = "./images/bg.webp";
+    const DEFAULT_IMAGE = "image.webp";
+    const DEFAULT_BG = "bg.webp";
   
     // background override
     if (deck.background) {
