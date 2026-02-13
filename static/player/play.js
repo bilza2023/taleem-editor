@@ -10,6 +10,8 @@ import {
 
 import { getDeckEndTime } from "./getDeckEndTime.js";
 import { applyStaticPlayerDefaults } from "./applyStaticPlayerDefaults.js";
+import { Howl } from "https://cdn.skypack.dev/howler@2.2.4";
+
 
 // ----------------------------------
 // read deck name from URL
@@ -35,7 +37,6 @@ if (!raw) {
 let deck;
 try {
   deck = JSON.parse(raw);
-// eslint-disable-next-line no-unused-vars
 } catch (e) {
   document.body.innerHTML = "<h2>Invalid deck JSON</h2>";
   throw new Error("Invalid deck JSON");
@@ -50,23 +51,20 @@ contentBase = contentBase.trim().replace(/\/$/, "");
 let assetPrefix = "";
 
 // ----------------------------------
-// MODE SWITCH
+// MODE SWITCH (images)
 // ----------------------------------
 if (!contentBase) {
-  // Demo mode (no user hosting)
   deck = applyStaticPlayerDefaults(deck);
   assetPrefix = "/images/";
 } else {
-  // Hosted mode (user controls images)
   assetPrefix = contentBase + "/images/";
 }
 
 // ----------------------------------
-// resolve assets
+// resolve assets (images/bg)
 // ----------------------------------
 resolveAssetPaths(deck, assetPrefix);
 resolveBackground(deck, assetPrefix);
-
 
 // ----------------------------------
 // create player
@@ -77,40 +75,80 @@ const player = createTaleemPlayer({
 });
 
 // ----------------------------------
-// duration (authoritative)
+// duration (authoritative for slides)
 // ----------------------------------
 const duration = getDeckEndTime(deck);
 
 // ----------------------------------
-// PAM state + timer
+// CLOCK SELECTION
+// ----------------------------------
+let clock;
+let sound = null;
+
+// hosted audio condition
+if (contentBase && deck.audio) {
+
+  const audioUrl = `${contentBase}/sounds/${deck.audio}`;
+
+  sound = new Howl({
+    src: [audioUrl],
+    html5: true,
+    preload: true
+  });
+
+  clock = {
+    play() {
+      sound.play();
+    },
+    pause() {
+      sound.pause();
+    },
+    seek(t) {
+      sound.seek(t);
+    },
+    now() {
+      return sound.seek() || 0;
+    }
+  };
+
+  // if audio ends → stop presentation
+  sound.on("end", () => {
+    renderLoop.stop();
+  });
+
+} else {
+  // fallback synthetic timer
+  const timer = new Timer();
+  clock = timer;
+}
+
+// ----------------------------------
+// PAM state
 // ----------------------------------
 const state = {
   currentTime: 0,
   duration
 };
 
-const timer = new Timer();
-
 // ----------------------------------
 // UI refs
 // ----------------------------------
 const timeEl   = document.getElementById("time");
-const playBtn = document.getElementById("play-btn");
+const playBtn  = document.getElementById("play-btn");
 const pauseBtn = document.getElementById("pause-btn");
-const stopBtn = document.getElementById("stop-btn");
-const scrubEl = document.getElementById("scrub");
+const stopBtn  = document.getElementById("stop-btn");
+const scrubEl  = document.getElementById("scrub");
 
 scrubEl.max = duration;
 
 // ----------------------------------
-// draw function (pure render)
+// draw function
 // ----------------------------------
 function draw(state) {
   const t = state.currentTime;
 
   player.renderAt(t);
 
-  // post-render math
   if (window.useMath) {
     window.useMath(document.querySelector("#app"));
   }
@@ -122,13 +160,14 @@ function draw(state) {
 renderLoop.setDraw(draw);
 
 // ----------------------------------
-// start render loop
+// render loop
 // ----------------------------------
 renderLoop.start(() => {
-  const t = timer.now();
 
+  const t = clock.now();
+
+  // slide clamping logic
   if (t >= duration) {
-    timer.pause();
     state.currentTime = duration;
     renderLoop.draw(state);
     return;
@@ -142,19 +181,20 @@ renderLoop.start(() => {
 // controls
 // ----------------------------------
 playBtn.onclick = () => {
-  timer.play();
+  clock.play();
 };
 
 pauseBtn.onclick = () => {
-  timer.pause();
+  clock.pause();
 };
 
 stopBtn.onclick = () => {
-  timer.pause();
-  timer.seek(0);
+  clock.pause();
+  clock.seek(0);
 };
 
 scrubEl.oninput = e => {
-  timer.seek(+e.target.value);
-  timer.pause();
+  const t = +e.target.value;
+  clock.seek(t);
+  clock.pause();
 };

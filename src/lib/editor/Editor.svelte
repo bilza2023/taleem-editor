@@ -58,7 +58,7 @@
   return {
     version: "deck-v1",
     name: deckName,
-    ...(audio && { audio }),
+    audio : audio,
     deck: slides.map(normalizeSlide)
   };
 }
@@ -190,7 +190,7 @@ onMount(() => {
 </script>
 <TopToolbar
 	bind:deckName
-	audio={audio}
+	bind:audio={audio}
 	on:updateAudio={(e) => audio = e.detail}
 	on:new={resetEditor}
 	on:save={saveDeck}
