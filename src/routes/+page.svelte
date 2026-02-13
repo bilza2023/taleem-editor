@@ -6,6 +6,25 @@
 	let savedDecks = [];
 	let fileInput;
 	let newTitle = "";
+	let userContentUrl = '';
+
+onMount(() => {
+	const saved = localStorage.getItem('taleem-user-content-url');
+	if (saved) {
+		userContentUrl = saved;
+	}
+});
+
+function saveUserContentUrl() {
+	if (!userContentUrl) {
+		localStorage.removeItem('taleem-user-content-url');
+		return;
+	}
+
+	const cleaned = userContentUrl.trim().replace(/\/$/, '');
+	localStorage.setItem('taleem-user-content-url', cleaned);
+	alert("saved" + cleaned);
+}
 
 	// ----------------------------
 	// LOAD SAVED DECKS
@@ -171,3 +190,24 @@
 	on:change={handleUpload}
 	style="display:none"
 />
+
+<div style="margin-top: 1rem;">
+	<!-- svelte-ignore a11y_label_has_associated_control -->
+	<label style="display:block; font-size:0.9rem; margin-bottom:0.3rem;">
+		Assets Base URL
+	</label>
+
+	<input
+		type="text"
+		bind:value={userContentUrl}
+		placeholder="https://user.github.io/course"
+		style="width:100%; padding:0.5rem;"
+	/>
+
+	<button
+		on:click={saveUserContentUrl}
+		style="margin-top:0.5rem; padding:0.4rem 0.8rem;"
+	>
+		Save
+	</button>
+</div>

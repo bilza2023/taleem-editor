@@ -4,7 +4,7 @@ import { Timer, renderLoop } from
 import {
   createTaleemPlayer,
   resolveBackground,
-  // resolveAssetPaths,
+  resolveAssetPaths
 } from
   "https://unpkg.com/taleem-player@latest/dist/taleem-player.esm.js";
 
@@ -41,15 +41,32 @@ try {
   throw new Error("Invalid deck JSON");
 }
 
+// ----------------------------------
+// resolve user content base
+// ----------------------------------
+let contentBase = localStorage.getItem("taleem-user-content-url") || "";
+contentBase = contentBase.trim().replace(/\/$/, "");
 
-// 🔥 STATIC PLAYER OVERRIDE (surgical)
-deck = applyStaticPlayerDefaults(deck);
+let assetPrefix = "";
+
+// ----------------------------------
+// MODE SWITCH
+// ----------------------------------
+if (!contentBase) {
+  // Demo mode (no user hosting)
+  deck = applyStaticPlayerDefaults(deck);
+  assetPrefix = "/images/";
+} else {
+  // Hosted mode (user controls images)
+  assetPrefix = contentBase + "/images/";
+}
 
 // ----------------------------------
 // resolve assets
 // ----------------------------------
-// resolveAssetPaths(deck, "/images/");
-resolveBackground(deck, "/images/");
+resolveAssetPaths(deck, assetPrefix);
+resolveBackground(deck, assetPrefix);
+
 
 // ----------------------------------
 // create player
