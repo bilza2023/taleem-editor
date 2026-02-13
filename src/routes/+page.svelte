@@ -112,6 +112,7 @@
 <div class="home">
 
 	<h4>Taleem Presentations</h4>
+	<span><a href="/help">help</a></span>
 	<!-- <hr/> -->
 	<!-- HERO BUTTONS -->
 	<section class="hero">
