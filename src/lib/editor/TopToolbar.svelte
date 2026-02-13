@@ -53,7 +53,6 @@
 	type="text"
 	placeholder="lesson1.opus"
 	bind:value={audio}
-	on:input={handleAudioInput}
   />
      
 
