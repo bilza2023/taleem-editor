@@ -13,9 +13,6 @@
 		e.target.value = "";
 	}
 
-  function handleAudioInput(e) {
-    dispatch("updateAudio", e.target.value);
-  }
 </script>
 
 <div class="topbar">
@@ -52,14 +49,13 @@
 	/>
 
 	<!-- svelte-ignore a11y_label_has_associated_control -->
-	<label>Audio File</label>
 	<input
 	type="text"
 	placeholder="lesson1.opus"
 	bind:value={audio}
 	on:input={handleAudioInput}
   />
-  
+     
 
 	<!-- <button class="btn" on:click={() => dispatch("new")}>🆕 New</button> -->
 

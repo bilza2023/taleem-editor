@@ -55,18 +55,14 @@
 	/* ───────── helpers ───────── */
 
 	function buildPayload() {
-	const payload = {
-		version: "deck-v1",
-		name: deckName,
-		deck: slides.map(normalizeSlide)
-	};
-
-	if (audio) {
-		payload.audio = audio;
-	}
-
-	return payload;
+  return {
+    version: "deck-v1",
+    name: deckName,
+    ...(audio && { audio }),
+    deck: slides.map(normalizeSlide)
+  };
 }
+
 
 
 	/* ───────── core actions ───────── */
