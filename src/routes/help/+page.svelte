@@ -1,4 +1,4 @@
-<style src="./help.css"></style>
+<style src="./taleem-editor/help.css"></style>
 
 
 <svelte:head>
@@ -20,21 +20,21 @@
   <h2>Conceptual</h2>
 
   <ul>
-    <li><a href="/help/what-is-taleem">What Is Taleem Presentation?</a></li>
-    <li><a href="/help/slides-selected-not-edited">Slides Are Selected, Not Edited</a></li>
-    <li><a href="/help/problem-with-traditional-slides">The Problem with Traditional Slide Software</a></li>
-    <li><a href="/help/fixed-schema-stability">Stability Through a Fixed Schema</a></li>
-    <li><a href="/help/built-for-ai">Built for AI Generation</a></li>
-    <li><a href="/help/text-based-presentations">Why Text-Based Presentations Are Powerful</a></li>
-    <li><a href="/help/open-source-player">Open Source Player and Future-Proof Content</a></li>
+    <li><a href="/taleem-editor/help/what-is-taleem">What Is Taleem Presentation?</a></li>
+    <li><a href="/taleem-editor/help/slides-selected-not-edited">Slides Are Selected, Not Edited</a></li>
+    <li><a href="/taleem-editor/help/problem-with-traditional-slides">The Problem with Traditional Slide Software</a></li>
+    <li><a href="/taleem-editor/help/fixed-schema-stability">Stability Through a Fixed Schema</a></li>
+    <li><a href="/taleem-editor/help/built-for-ai">Built for AI Generation</a></li>
+    <li><a href="/taleem-editor/help/text-based-presentations">Why Text-Based Presentations Are Powerful</a></li>
+    <li><a href="/taleem-editor/help/open-source-player">Open Source Player and Future-Proof Content</a></li>
   </ul>
 
   <h2>Practical</h2>
 
   <ul>
-    <li><a href="/help/create-first-presentation">How to Create Your First Presentation</a></li>
-    <li><a href="/help/understanding-slide-types">Understanding Slide Types</a></li>
-    <li><a href="/help/assets-and-hosting">Using Images and Audio</a></li>
+    <li><a href="/taleem-editor/help/create-first-presentation">How to Create Your First Presentation</a></li>
+    <li><a href="/taleem-editor/help/understanding-slide-types">Understanding Slide Types</a></li>
+    <li><a href="/taleem-editor/help/assets-and-hosting">Using Images and Audio</a></li>
   </ul>
 
   <p>
