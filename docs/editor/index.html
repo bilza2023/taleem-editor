@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Taleem Editor</title>
+
+  <link rel="stylesheet" href="./editor.css" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #111;
+      color: #fff;
+    }
+
+    .app-nav {
+      height: 60px;
+      background: #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      box-sizing: border-box;
+      border-bottom: 1px solid #333;
+    }
+
+    .app-title {
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    .nav-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .nav-actions input {
+      color: white;
+    }
+
+    #app {
+      height: calc(100vh - 60px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-nav">
+    <div class="app-title">Taleem Editor</div>
+    <div class="nav-actions">
+      <input type="file" id="fileInput" accept=".json" />
+    </div>
+  </div>
+
+  <div id="app"></div>
+
+  <script src="./editor.js"></script>
+
+  <script>
+    let currentEditor = null;
+
+    function mountEditor(slides = [], deckName = "untitled-deck") {
+      if (!window.createTaleemEditor) {
+        console.error("Taleem Editor factory not found.");
+        return;
+      }
+
+      const target = document.getElementById("app");
+      target.innerHTML = "";
+
+      currentEditor = window.createTaleemEditor({
+        target,
+        props: {
+          slides,
+          deckName
+        }
+      });
+    }
+
+    // Initial empty mount
+    mountEditor([], "new-deck");
+
+    // File loader
+    document.getElementById("fileInput").addEventListener("change", function (e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (event) {
+        try {
+          const parsed = JSON.parse(event.target.result);
+
+          // Support both raw slide array and full deck object
+          let slides = [];
+          let deckName = file.name.replace(".json", "");
+
+          if (Array.isArray(parsed)) {
+            slides = parsed;
+          } else if (parsed.deck && Array.isArray(parsed.deck)) {
+            slides = parsed.deck;
+            deckName = parsed.name || deckName;
+          } else {
+            alert("Invalid deck format.");
+            return;
+          }
+
+          mountEditor(slides, deckName);
+
+        } catch (err) {
+          alert("Invalid JSON file.");
+        }
+      };
+
+      reader.readAsText(file);
+    });
+  </script>
+
+</body>
+</html>
